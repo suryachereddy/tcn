@@ -49,8 +49,8 @@ def write_video(file_name, path, frames):
     imageio.mimwrite(os.path.join(path, file_name), frames, fps=60)
 
 def read_video(filepath, frame_size):
-    imageio_video = imageio.read(filepath)
-    snap_length = len(imageio_video)
+    imageio_video = np.load(filepath)
+    snap_length = imageio_video.shape[0]
     frames = np.zeros((snap_length, 3, *frame_size))
     resized = map(lambda frame: _resize_frame(frame, frame_size), imageio_video)
     for i, frame in enumerate(resized):
@@ -85,7 +85,7 @@ class SingleViewTripletBuilder(object):
         self.video_count = len(self.video_paths)
 
     def _count_frames(self):
-        frame_lengths = np.array([len(imageio.read(p)) for p in self.video_paths])
+        frame_lengths = np.array([120 for p in self.video_paths])
         self.frame_lengths = frame_lengths
         self.cumulative_lengths = np.zeros(len(self.frame_lengths), dtype=np.int32)
         prev = 0
